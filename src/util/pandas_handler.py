@@ -25,6 +25,18 @@ class PandasHandler:
         except Exception as error:
             raise ErrorGenerator(1, f"Error reading csv: {error}")
 
+    def filter_dataframe(self, column: str, values: List) -> None:
+        """
+        Method to filter dataframe based
+        in a condition.
+        """
+        try:
+            self.dataframe = self.dataframe[
+                self.dataframe[column].isin(values)
+            ]
+        except Exception as error:
+            raise ErrorGenerator(12, f"Error filtering dataframe: {error}")
+
     def get_values_from_column_to_compare(self, column: str) -> List:
         """
         Method to get values from a specific column to
