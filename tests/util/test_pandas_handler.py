@@ -56,7 +56,7 @@ def test_reading_csv_with_error():
     assert error_code == 1
 
 
-def test_get_values_from_column():
+def test_get_values_from_column_to_insert():
     """
     Method to teste if csv file is being readed.
     """
@@ -73,7 +73,9 @@ def test_get_values_from_column():
 
     pandas_handler = PandasHandler(file_path)
     pandas_handler.read_csv(separator, data_type)
-    values_top_5 = pandas_handler.get_values_from_column("debtId")[0:5]
+    values_top_5 = pandas_handler.get_values_from_column_to_insert("debtId")[
+        0:5
+    ]
 
     result_top_5 = [
         ["ea23f2ca-663a-4266-a742-9da4c9f4fcb3"],
@@ -81,6 +83,38 @@ def test_get_values_from_column():
         ["9f5a2b0c-967e-4443-a03d-9d7cdcb2216f"],
         ["33bec852-beee-477f-ae65-1475c74e1966"],
         ["e2dba21b-5520-4226-82b5-90c6bb3356c6"],
+    ]
+
+    assert values_top_5 == result_top_5
+
+
+def test_get_values_from_column_to_compare():
+    """
+    Method to teste if csv file is being readed.
+    """
+    file_path = os.path.join(os.getcwd(), "assets", "input.csv")
+    separator = ","
+    data_type = {
+        "name": str,
+        "governmentId": str,
+        "email": str,
+        "debtAmount": str,
+        "debtDueDate": str,
+        "debtId": str,
+    }
+
+    pandas_handler = PandasHandler(file_path)
+    pandas_handler.read_csv(separator, data_type)
+    values_top_5 = pandas_handler.get_values_from_column_to_compare("debtId")[
+        0:5
+    ]
+
+    result_top_5 = [
+        "ea23f2ca-663a-4266-a742-9da4c9f4fcb3",
+        "acc1794e-b264-4fab-8bb7-3400d4c4734d",
+        "9f5a2b0c-967e-4443-a03d-9d7cdcb2216f",
+        "33bec852-beee-477f-ae65-1475c74e1966",
+        "e2dba21b-5520-4226-82b5-90c6bb3356c6",
     ]
 
     assert values_top_5 == result_top_5
