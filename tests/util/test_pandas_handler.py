@@ -146,3 +146,39 @@ def test_filter_dataframe():
 
     assert quantity_of_elements == 1
     assert debt_id == ["ea23f2ca-663a-4266-a742-9da4c9f4fcb3"]
+
+
+def test_get_dataframe_values():
+    """
+    Method to get_dataframe_values method.
+    """
+    file_path = os.path.join(os.getcwd(), "assets", "input.csv")
+    separator = ","
+    data_type = {
+        "name": str,
+        "governmentId": str,
+        "email": str,
+        "debtAmount": str,
+        "debtDueDate": str,
+        "debtId": str,
+    }
+
+    pandas_handler = PandasHandler(file_path)
+    pandas_handler.read_csv(separator, data_type)
+    pandas_handler.filter_dataframe(
+        "debtId", ["ea23f2ca-663a-4266-a742-9da4c9f4fcb3"]
+    )
+
+    values = pandas_handler.get_dataframe_values()
+    result = [
+        [
+            "Elijah Santos",
+            "9558",
+            "janet95@example.com",
+            "7811",
+            "2024-01-19",
+            "ea23f2ca-663a-4266-a742-9da4c9f4fcb3",
+        ]
+    ]
+
+    assert values == result

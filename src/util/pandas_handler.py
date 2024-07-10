@@ -37,6 +37,18 @@ class PandasHandler:
         except Exception as error:
             raise ErrorGenerator(12, f"Error filtering dataframe: {error}")
 
+    def get_dataframe_values(self) -> List:
+        """
+        Method to get dataframe values
+        """
+        try:
+            values = self.dataframe.values.tolist()
+            return values
+        except Exception as error:
+            raise ErrorGenerator(
+                13, f"Error getting dataframe values: {error}"
+            )
+
     def get_values_from_column_to_compare(self, column: str) -> List:
         """
         Method to get values from a specific column to
