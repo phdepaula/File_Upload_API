@@ -1,7 +1,8 @@
 from typing import Dict
-from src.util.error_generator import ErrorGenerator
 
 import pandas as pd
+
+from src.util.error_generator import ErrorGenerator
 
 
 class PandasHandler:
