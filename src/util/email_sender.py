@@ -1,3 +1,6 @@
+from src.util.error_generator import ErrorGenerator
+
+
 class EmailSender:
     """
     Method responsible for sendind Email.
@@ -18,7 +21,7 @@ class EmailSender:
             self._send_email()
             return self._get_feedback(self.SUCCESS)
         except Exception as error:
-            return self._get_feedback(self.ERROR, error)
+            raise ErrorGenerator(9, self._get_feedback(self.ERROR, error))
 
     def _get_feedback(self, status: str, error_message: str = "") -> str:
         """
