@@ -13,6 +13,7 @@ class Invoice_Database:
     DATABASE_NAME = "Invoice_Database.db"
     TABLE_INVOICE = "Invoice"
     DEBT_ID = "debt_id"
+    EMAIL_SENT = "email_sent"
 
     def __init__(self) -> None:
         self.database_path = self._get_database_path()
@@ -28,7 +29,8 @@ class Invoice_Database:
 
             table_query = (
                 f"CREATE TABLE IF NOT EXISTS {self.TABLE_INVOICE} "
-                + f"({self.DEBT_ID} TEXT PRIMARY KEY)"
+                + f"({self.DEBT_ID} TEXT PRIMARY KEY, "
+                + f"{self.EMAIL_SENT} INTEGER)"
             )
             cursor.execute(table_query)
 
@@ -62,15 +64,15 @@ class Invoice_Database:
 
         return database_path
 
-    def get_all_data(self) -> List:
+    def get_all_dbt_id(self) -> List:
         """
-        Method to get all data registred.
+        Method to get all dbt_id registred.
         """
         try:
             connection = self._get_connection()
             cursor = connection.cursor()
 
-            select_query = f"SELECT * FROM {self.TABLE_INVOICE}"
+            select_query = f"SELECT {self.DEBT_ID} FROM {self.TABLE_INVOICE}"
             cursor.execute(select_query)
             data = cursor.fetchall()
 
@@ -78,7 +80,28 @@ class Invoice_Database:
 
             return list([debt_id[0] for debt_id in data])
         except Exception as error:
-            raise ErrorGenerator(5, f"Error getting database data: {error}")
+            raise ErrorGenerator(5, f"Error getting debt id: {error}")
+
+    def get_dbt_id_pendent(self) -> List:
+        """
+        Method to get all data registred.
+        """
+        try:
+            connection = self._get_connection()
+            cursor = connection.cursor()
+
+            select_query = (
+                f"SELECT {self.DEBT_ID} FROM {self.TABLE_INVOICE} "
+                f"WHERE {self.EMAIL_SENT} = 0"
+            )
+            cursor.execute(select_query)
+            data = cursor.fetchall()
+
+            connection.close()
+
+            return list([debt_id[0] for debt_id in data])
+        except Exception as error:
+            raise ErrorGenerator(8, f"Error getting debt id pendent: {error}")
 
     def insert_content(self, content: List) -> None:
         """
@@ -89,11 +112,32 @@ class Invoice_Database:
             cursor = connection.cursor()
 
             query = (
-                f"INSERT INTO {self.TABLE_INVOICE} ({self.DEBT_ID}) VALUES (?)"
+                f"INSERT INTO {self.TABLE_INVOICE} "
+                f"({self.DEBT_ID}, {self.EMAIL_SENT}) VALUES (?, 0)"
             )
             cursor.executemany(query, content)
 
             connection.commit()
             connection.close()
         except Exception as error:
-            raise ErrorGenerator(6, f"Error inserting data: {error}")
+            raise ErrorGenerator(6, f"Error inserting content: {error}")
+
+    def update_email_sent(self, content: List) -> None:
+        """
+        Method to update email sent.
+        """
+        try:
+            connection = self._get_connection()
+            cursor = connection.cursor()
+
+            query = (
+                f"UPDATE {self.TABLE_INVOICE} SET "
+                + f"{self.EMAIL_SENT} = 1 WHERE "
+                + f"{self.DEBT_ID} = ?"
+            )
+            cursor.executemany(query, content)
+
+            connection.commit()
+            connection.close()
+        except Exception as error:
+            raise ErrorGenerator(7, f"Error updating content: {error}")
