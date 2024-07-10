@@ -33,8 +33,8 @@ class Invoice_Database:
             cursor.execute(table_query)
 
             index_query = (
-                f"CREATE INDEX IF NOT EXISTS idx_debt_id ON {self.TABLE_INVOICE}"
-                + f" ({self.DEBT_ID})"
+                "CREATE INDEX IF NOT EXISTS idx_debt_id ON "
+                + f"{self.TABLE_INVOICE} ({self.DEBT_ID})"
             )
             cursor.execute(index_query)
 

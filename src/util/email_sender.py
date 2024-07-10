@@ -28,7 +28,7 @@ class EmailSender:
         feedback = (
             (f"Email sent {self.email}.\n" + f"Message: {self.message}.")
             if status == self.SUCCESS
-            else (f"Error sending the e-mail.\n" + f"Error: {error_message}.")
+            else ("Error sending the e-mail.\n" + f"Error: {error_message}.")
         )
 
         return feedback
