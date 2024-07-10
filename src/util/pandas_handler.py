@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 import pandas as pd
 
@@ -24,3 +24,20 @@ class PandasHandler:
             )
         except Exception as error:
             raise ErrorGenerator(1, f"Error reading csv: {error}")
+
+    def get_values_from_column(self, column: str) -> List:
+        """
+        Method to get values from a specific column
+        """
+        try:
+            if self.dataframe is not None:
+                values = (
+                    self.dataframe[column]
+                    .apply(lambda value: [value])
+                    .tolist()
+                )
+                return values
+        except Exception as error:
+            raise ErrorGenerator(
+                10, f"Error getting values from {column}: {error}"
+            )
