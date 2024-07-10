@@ -11,4 +11,4 @@ def test_email_sender():
     email_sender = EmailSender(email, message)
     feedback = email_sender.execute_email_sender()
 
-    assert feedback == (f"Email sent {email}.\n" + f"Message: {message}")
+    assert feedback == (f"Email sent {email}.\n" + f"Message: {message}.")
