@@ -1,7 +1,7 @@
 import uvicorn
 
 import src.routes.documentation
-import src.routes.upload_route
+import routes.upload
 
 from src.routes.app import app
 
