@@ -40,4 +40,4 @@ class EmailSender:
         """
         Method responsible for sending an email
         """
-        print(f"Sending email to {self.email}.")
+        pass
