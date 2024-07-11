@@ -79,7 +79,6 @@ class Invoice:
         """
         try:
             message = f"Creating invoice: {self.debt_id}"
-            print(message)
             return message
         except Exception as error:
             raise ErrorGenerator(8, f"Error creating invoice: {error}")
