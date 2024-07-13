@@ -29,7 +29,7 @@ class EmailSender:
         the sent email.
         """
         feedback = (
-            (f"Email sent {self.email}.\n" + f"Message: {self.message}.")
+            (f"Email sent to {self.email}.\n" + f"Message: {self.message}.")
             if status == self.SUCCESS
             else ("Error sending the e-mail.\n" + f"Error: {error_message}.")
         )
