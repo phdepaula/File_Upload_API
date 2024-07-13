@@ -73,12 +73,11 @@ class Invoice:
         """
         return text.strip()
 
-    def create_invoice(self) -> str:
+    def create_invoice(self) -> None:
         """
         Method responsible for creating invoice.
         """
         try:
-            message = f"Invoice created: {self.debt_id}"
-            return message
+            pass
         except Exception as error:
             raise ErrorGenerator(8, f"Error creating invoice: {error}")
