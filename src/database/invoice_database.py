@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from typing import List
 
 from src.util.error_generator import ErrorGenerator
@@ -10,46 +9,25 @@ class Invoice_Database:
     Class to create database to save invoices generated.
     """
 
-    DATABASE_NAME = "Invoice_Database.db"
-    TABLE_INVOICE = "Invoice"
-    DEBT_ID = "debt_id"
-    EMAIL_SENT = "email_sent"
+    DATABASE_NAME = "invoice_database.txt"
 
     def __init__(self) -> None:
         self.database_path = self._get_database_path()
-        self._create_database_environment()
 
-    def _create_database_environment(self) -> None:
+    def create_database_file(self, content: List) -> None:
         """
         Method to create invoice database.
         """
         try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
+            text = "\n".join(content)
 
-            table_query = (
-                f"CREATE TABLE IF NOT EXISTS {self.TABLE_INVOICE} "
-                + f"({self.DEBT_ID} TEXT PRIMARY KEY, "
-                + f"{self.EMAIL_SENT} INTEGER)"
-            )
-            cursor.execute(table_query)
+            if os.path.exists(self.database_path):
+                text = "\n" + text
 
-            index_query = (
-                "CREATE INDEX IF NOT EXISTS idx_debt_id ON "
-                + f"{self.TABLE_INVOICE} ({self.DEBT_ID})"
-            )
-            cursor.execute(index_query)
-
-            connection.commit()
-            connection.close()
+            with open(self.database_path, "a") as file:
+                file.write(text)
         except Exception as error:
             raise ErrorGenerator(4, f"Error creating database: {error}")
-
-    def _get_connection(self) -> sqlite3.connect:
-        """
-        Method to get database connection.
-        """
-        return sqlite3.connect(self.database_path)
 
     def _get_database_path(self) -> str:
         """
@@ -64,80 +42,16 @@ class Invoice_Database:
 
         return database_path
 
-    def get_all_dbt_id(self) -> List:
+    def get_all_data(self) -> List:
         """
         Method to get all dbt_id registred.
         """
         try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
-
-            select_query = f"SELECT {self.DEBT_ID} FROM {self.TABLE_INVOICE}"
-            cursor.execute(select_query)
-            data = cursor.fetchall()
-
-            connection.close()
-
-            return list([debt_id[0] for debt_id in data])
+            if not os.path.exists(self.database_path):
+                return []
+            else:
+                with open(self.database_path, "r") as file:
+                    content = file.read()
+                    return content.split("\n")
         except Exception as error:
-            raise ErrorGenerator(5, f"Error getting debt id: {error}")
-
-    def get_dbt_id_pendent(self) -> List:
-        """
-        Method to get all data registred.
-        """
-        try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
-
-            select_query = (
-                f"SELECT {self.DEBT_ID} FROM {self.TABLE_INVOICE} "
-                f"WHERE {self.EMAIL_SENT} = 0"
-            )
-            cursor.execute(select_query)
-            data = cursor.fetchall()
-
-            connection.close()
-
-            return list([debt_id[0] for debt_id in data])
-        except Exception as error:
-            raise ErrorGenerator(8, f"Error getting debt id pendent: {error}")
-
-    def insert_content(self, content: List) -> None:
-        """
-        Method to insert content into Table.
-        """
-        try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
-
-            query = (
-                f"INSERT INTO {self.TABLE_INVOICE} "
-                f"({self.DEBT_ID}, {self.EMAIL_SENT}) VALUES (?, 0)"
-            )
-            cursor.executemany(query, content)
-
-            connection.commit()
-            connection.close()
-        except Exception as error:
-            raise ErrorGenerator(6, f"Error inserting content: {error}")
-
-    def update_email_sent(self, content: List) -> None:
-        """
-        Method to update email sent.
-        """
-        try:
-            connection = self._get_connection()
-            cursor = connection.cursor()
-
-            query = (
-                f"UPDATE {self.TABLE_INVOICE} SET "
-                + f"{self.EMAIL_SENT} = 1 WHERE "
-                + f"{self.DEBT_ID} = ?"
-            )
-            cursor.executemany(query, content)
-
-            connection.commit()
-            connection.close()
-        except Exception as error:
-            raise ErrorGenerator(7, f"Error updating content: {error}")
+            raise ErrorGenerator(5, f"Error getting all data: {error}")
