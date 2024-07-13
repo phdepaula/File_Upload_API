@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Dict, List
 
 from src.database.invoice_database import Invoice_Database
+from src.util.email_sender import EmailSender
 from src.util.error_generator import ErrorGenerator
 from src.util.invoice import Invoice
 from src.util.log_generator import LogGenerator
@@ -28,17 +29,19 @@ class InvoiceProcess:
         self.end_date = None
         self.runtime = None
         self.invoices_added = []
+        self.email_sent = []
         self.__pandas_handler = PandasHandler(self.INPUT_PATH)
         self.__invoice_database = Invoice_Database()
         self.__log = None
 
-    def _create_invoice(self, data: List) -> None:
+    def _create_invoice(self, data: List) -> Invoice:
         """
         Method responsible for creating invoice.
         """
         invoice = Invoice(*data)
-
         self.invoices_added.append(invoice.debt_id)
+
+        return invoice
 
     def _filter_new_invoices_to_generate(self) -> List:
         """
@@ -72,6 +75,9 @@ class InvoiceProcess:
 
             invoices_text = ", ".join(self.invoices_added)
             self.__log._add_new_log(f"Invoices created: {invoices_text}")
+
+            email_text = ", ".join(self.email_sent)
+            self.__log._add_new_log(f"Email sent to: {email_text}")
 
             self._save_new_invoices_in_database()
         else:
@@ -139,8 +145,8 @@ class InvoiceProcess:
         Method responsible for executing all steps
         to generate a invoice.
         """
-        self._create_invoice(data)
-        self._add_invoice(data)
+        invoice = self._create_invoice(data)
+        self._send_email(invoice)
 
     def _save_new_invoices_in_database(self) -> None:
         """
@@ -148,6 +154,19 @@ class InvoiceProcess:
         """
         self.__log._add_new_log("Saving new invoices to database.")
         self.__invoice_database.create_database_file(self.invoices_added)
+
+    def _send_email(self, invoice: Invoice) -> None:
+        """
+        Method responsible for sending email.
+        """
+        email = invoice.email
+        debt_id = invoice.debt_id
+        message = f"Invoice generated with the following debt id {debt_id}"
+
+        email_sender = EmailSender(email, message)
+        email_sender.execute_email_sender()
+
+        self.email_sent.append(email)
 
     def _set_start_date(self) -> None:
         """
