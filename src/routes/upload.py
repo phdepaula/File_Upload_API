@@ -17,7 +17,7 @@ def upload_invoice() -> Dict:
         invoice_process.execute_invoice_process()
 
         response = {
-            "message": "Invoices successfully generated",
+            "message": "Invoices successfully generated.",
             "runtime": invoice_process.runtime,
             "quantity_of_invoices": len(invoice_process.invoices_added),
         }
