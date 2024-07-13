@@ -12,6 +12,7 @@ class LogGenerator:
     def __init__(self, name: str):
         self.name = name
         self.log_path = None
+        self.runtime = None
         self._create_log_file()
 
     def _add_new_log(self, message: str) -> None:
@@ -51,3 +52,18 @@ class LogGenerator:
         date_formated = date.strftime("%Y-%m-%d %H:%M:%S")
 
         return date_formated
+
+    def _close_log(self, start_date: datetime, end_date: datetime) -> None:
+        """
+        Method responsible for closing long
+        """
+        difference = end_date - start_date
+        total_seconds = difference.total_seconds()
+        minutes = int(total_seconds // 60)
+        seconds = int(total_seconds % 60)
+
+        self.runtime = f"Runtime: {minutes} minutes and {seconds} seconds."
+
+        with open(self.log_path, "a") as file:
+            text = "\n\n" + self._get_current_time() + f" {self.runtime}"
+            file.write(text)
