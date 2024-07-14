@@ -1,0 +1,13 @@
+version: '3'
+services:
+  my-app-file-upload-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: file-upload-api
+    image: file-upload-api:1.0.0
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src/database/file:/app/src/database/file
+      - ./log:/app/log
